@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="sum_primary_color">#1f6dfd</color>
+    <color name="sum_dark_color">#401FFD</color>
+    <color name="gold">#FDAF1F</color>
+    <color name="gold_darker">#FF9933</color>
 </resources>

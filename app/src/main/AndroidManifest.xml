@@ -13,14 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SUM">
 
+        <!--chave diogo: AIzaSyCNiAQ-XwLYPHyQfBtfOKCs5pcrtFRShCM-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCNiAQ-XwLYPHyQfBtfOKCs5pcrtFRShCM" />
+            android:value="${MAPS_API_KEY}" /> <!--set in the local.properties file so each dev can have his own key-->
 
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
