@@ -11,4 +11,5 @@
     <color name="sum_dark_color">#401FFD</color>
     <color name="gold">#FDAF1F</color>
     <color name="gold_darker">#FF9933</color>
+    <color name="dark_gold_contrast">#1A0F05</color>
 </resources>
