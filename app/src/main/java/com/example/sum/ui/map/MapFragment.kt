@@ -1,12 +1,10 @@
-package com.example.sum.ui.home
+package com.example.sum.ui.map
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,11 +21,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import java.io.IOException
-import java.util.*
 
 
-class HomeFragment : Fragment() , GoogleMap.OnMarkerClickListener {
+class MapFragment : Fragment() , GoogleMap.OnMarkerClickListener {
 
     private lateinit var lastLocation: Location
     private lateinit var mMap:GoogleMap
@@ -51,7 +47,7 @@ class HomeFragment : Fragment() , GoogleMap.OnMarkerClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,12 +61,10 @@ class HomeFragment : Fragment() , GoogleMap.OnMarkerClickListener {
 
     }
 
-
-
-
     /**
      * This function is use to set up map permissions and and set users location
      */
+    @SuppressLint("MissingPermission")
     private fun setUpMap() {
 
         if (ActivityCompat.checkSelfPermission(
@@ -82,7 +76,7 @@ class HomeFragment : Fragment() , GoogleMap.OnMarkerClickListener {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
 
-            permissionLaucher.launch(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,android.Manifest.permission.ACCESS_FINE_LOCATION))
+            permissionLaucher.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION))
             return
         }
         mMap.isMyLocationEnabled = true

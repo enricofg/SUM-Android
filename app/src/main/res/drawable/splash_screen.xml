@@ -3,7 +3,7 @@
     <item
         android:drawable="@drawable/ic_launcher_foreground"
         android:gravity="center" />
-    <item android:drawable="@color/white" />
+    <item android:drawable="@color/light_blue" />
     <!--<item
         android:bottom="50dp"
         android:drawable="@drawable/ic_politecnico_h"
