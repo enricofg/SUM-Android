@@ -2,18 +2,17 @@ package com.example.sum.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.sum.R
 import com.example.sum.databinding.FragmentSettingsBinding
+import com.example.sum.utility.get
+import com.example.sum.utility.put
 
 
 class SettingsFragment : Fragment() {
@@ -34,16 +33,16 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val sharedPreferences =
             requireActivity().getSharedPreferences("APP_SETTINGS", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
         val languages = arrayOf(
-            getString(R.string.choose_language), getString(R.string.english), getString(
-                R.string.portuguese
-            )
+            getString(R.string.choose_language),
+            getString(R.string.english),
+            getString(R.string.portuguese)
         ) //TODO: add country flags next to text
         val themes = arrayOf(
-            getString(R.string.choose_theme), getString(R.string.light), getString(
-                R.string.dark
-            ), getString(R.string.auto)
+            getString(R.string.choose_theme),
+            getString(R.string.light),
+            getString(R.string.dark),
+            getString(R.string.auto)
         )
         val root: View = binding.root
         val languageOptions = binding.languageOptions
@@ -81,29 +80,22 @@ class SettingsFragment : Fragment() {
                 if (!isLanguageOptionsTouched) return
                 when (parent?.getItemAtPosition(position).toString()) {
                     //TODO: change the language of all items in the app according to the selected choice
-                    "English" -> {
+                    getString(R.string.english) -> {
                         /**english selected*/
                         activity?.let {
-                            Toast.makeText(
-                                it.applicationContext,
-                                parent?.getItemAtPosition(position).toString() + "English chosen",
-                                Toast.LENGTH_LONG
-                            ).show()
-/*                            LocaleHelper.setLocale(it.applicationContext, "en") //set language to english
-                            (activity as MainActivity).restartApp()*/
+                            sharedPreferences.apply {
+                                put("language", "en")
+                            }
+                            requireActivity().recreate()
                         }
                     }
-                    "Portuguese" -> {
+                    getString(R.string.portuguese) -> {
                         /**portuguese selected*/
                         activity?.let {
-                            Toast.makeText(
-                                it.applicationContext,
-                                parent?.getItemAtPosition(position)
-                                    .toString() + "Portuguese chosen",
-                                Toast.LENGTH_LONG
-                            ).show()
-/*                            LocaleHelper.setLocale(it.applicationContext, "pt") //set language to english
-                            (activity as MainActivity).restartApp()*/
+                            sharedPreferences.apply {
+                                put("language", "pt")
+                            }
+                            requireActivity().recreate()
                         }
                     }
                 }
@@ -141,28 +133,31 @@ class SettingsFragment : Fragment() {
             ) {
                 if (!isThemesOptionsTouched) return
                 when (parent?.getItemAtPosition(position).toString()) {
-                    "Light" -> {
+                    getString(R.string.light) -> {
                         /**light theme selected*/
                         activity?.let {
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                            editor.putString("theme", "light")
-                            editor.commit()
+                            sharedPreferences.apply {
+                                put("theme", "light")
+                            }
+                            requireActivity().recreate()
                         }
                     }
-                    "Dark" -> {
+                    getString(R.string.dark) -> {
                         /**dark theme selected*/
                         activity?.let {
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                            editor.putString("theme", "dark")
-                            editor.commit()
+                            sharedPreferences.apply {
+                                put("theme", "dark")
+                            }
+                            requireActivity().recreate()
                         }
                     }
-                    "Auto" -> {
+                    getString(R.string.auto) -> {
                         /**auto theme color selected*/
                         activity?.let {
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                            editor.putString("theme", "auto")
-                            editor.commit()
+                            sharedPreferences.apply {
+                                put("theme", "auto")
+                            }
+                            requireActivity().recreate()
                         }
                     }
                 }
