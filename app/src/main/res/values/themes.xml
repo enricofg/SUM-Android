@@ -2,19 +2,25 @@
     <!-- Base application theme. -->
     <style name="Theme.SUM" parent="Theme.Material3.DayNight"> <!--Theme.MaterialComponents.DayNight.DarkActionBar-->
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/sum_primary_color</item>
-        <item name="colorPrimaryVariant">@color/sum_dark_color</item>
-        <item name="colorOnPrimary">@color/light_blue</item>
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorPrimaryVariant">@color/blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="backgroundColor">@color/light_blue</item>
+        <item name="android:textColor">@color/dark_gold_contrast</item>
+        <!--<item name="tint">@color/dark_gold_contrast</item>-->
+        <item name="iconTint">@color/dark_gold_contrast</item>
+        <item name="itemIconTint">@color/light_blue</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/gold</item>
-        <item name="colorSecondaryVariant">@color/gold_darker</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/gold_dark</item>
+        <item name="colorOnSecondary">@color/dark_gold_contrast</item>
+        <item name="backgroundTint">@color/gold</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/sum_primary_color</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/primary_blue</item>
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/light_blue</item>
         <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/ic_politecnico_h_branco</item>

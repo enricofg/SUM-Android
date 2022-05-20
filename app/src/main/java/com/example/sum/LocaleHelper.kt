@@ -1,12 +1,9 @@
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
-import android.preference.PreferenceManager
 import java.util.*
 
 object LocaleHelper {
-    private const val SELECTED_LANGUAGE = "Locale.Helper.Selected.Language"
-
     // the method is used to set the language at runtime
     fun setLocale(context: Context, language: String): Context {
         persist(context, language)
@@ -19,9 +16,11 @@ object LocaleHelper {
     }
 
     private fun persist(context: Context, language: String) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        //val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val preferences = context.getSharedPreferences("APP_SETTINGS", Context.MODE_PRIVATE)
         val editor = preferences.edit()
-        editor.putString(SELECTED_LANGUAGE, language)
+        editor.putString("selected_language", language)
+        editor.commit()
         editor.apply()
     }
 

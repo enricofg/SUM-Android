@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".ui.settings.SettingsFragment">
 
     <LinearLayout
@@ -26,7 +25,6 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:src="@drawable/ic_outline_settings_24"
-            app:tint="@color/dark_gold_contrast"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -38,7 +36,7 @@
             android:autoSizeMinTextSize="24sp"
             android:gravity="center"
             android:text="@string/title_settings"
-            android:textColor="@color/dark_gold_contrast"
+
             android:textSize="36sp" />
     </LinearLayout>
 
@@ -64,7 +62,6 @@
             android:autoSizeMinTextSize="18sp"
             android:gravity="center_vertical"
             android:text="@string/language"
-            android:textColor="@color/dark_gold_contrast"
             android:textSize="20sp" />
 
         <Spinner
@@ -102,7 +99,6 @@
             android:autoSizeMinTextSize="18sp"
             android:gravity="center_vertical"
             android:text="@string/theme"
-            android:textColor="@color/dark_gold_contrast"
             android:textSize="20sp" />
 
         <Spinner

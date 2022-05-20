@@ -15,4 +15,11 @@
     <string name="title_settings">Settings</string>
     <string name="language">Language</string>
     <string name="theme">Theme</string>
+    <string name="choose_language">Choose language</string>
+    <string name="choose_theme">Choose theme</string>
+    <string name="english">English</string>
+    <string name="portuguese">Portuguese</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="auto">Auto</string>
 </resources>

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".ui.bus.BusFragment">
 
     <LinearLayout
@@ -24,8 +23,7 @@
             android:layout_gravity="center"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_bus_clock_24"
-            app:tint="@color/dark_gold_contrast" />
+            android:src="@drawable/ic_baseline_bus_clock_24" />
 
         <TextView
             android:id="@+id/busFragmentTitle"
@@ -36,7 +34,6 @@
             android:autoSizeMinTextSize="24sp"
             android:gravity="center"
             android:text="@string/title_schedules"
-            android:textColor="@color/dark_gold_contrast"
             android:textSize="36sp" />
     </LinearLayout>
 
@@ -62,7 +59,6 @@
             android:autoSizeMinTextSize="18sp"
             android:gravity="center_vertical"
             android:text="@string/text_startingpoint"
-            android:textColor="@color/dark_gold_contrast"
             android:textSize="20sp" />
 
         <Spinner
@@ -102,7 +98,6 @@
             android:contentDescription="@string/departure_date"
             android:gravity="center_vertical"
             android:text="@string/text_departure"
-            android:textColor="@color/dark_gold_contrast"
             android:textSize="20sp"
             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -116,7 +111,6 @@
             android:inputType="datetime"
             android:labelFor="@id/textView3"
             android:minHeight="48dp"
-            android:textColor="@color/dark_gold_contrast"
             tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
     </LinearLayout>
@@ -127,7 +121,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/gold"
+        android:backgroundTint="@color/gold_dark"
         android:minLines="2"
         android:text="@string/search"
         android:textColor="@color/dark_gold_contrast"

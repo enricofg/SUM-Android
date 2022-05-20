@@ -14,4 +14,11 @@
     <string name="title_settings">Configurações</string>
     <string name="language">Língua</string>
     <string name="theme">Tema</string>
+    <string name="choose_language">Escolha o idioma</string>
+    <string name="choose_theme">Escolha o tema</string>
+    <string name="english">Inglês</string>
+    <string name="portuguese">Português</string>
+    <string name="light">Claro</string>
+    <string name="dark">Escuro</string>
+    <string name="auto">Automático</string>
 </resources>

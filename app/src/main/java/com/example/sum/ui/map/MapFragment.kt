@@ -3,6 +3,7 @@ package com.example.sum.ui.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,24 +21,49 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 
 
-class MapFragment : Fragment() , GoogleMap.OnMarkerClickListener {
+class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
     private lateinit var lastLocation: Location
-    private lateinit var mMap:GoogleMap
+    private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var permissionLaucher: ActivityResultLauncher<Array<String>>
     override fun onMarkerClick(p0: Marker) = false
 
-
     private val callback = OnMapReadyCallback { googleMap ->
-        mMap= googleMap
+        mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.isIndoorEnabled = true
         mMap.isBuildingsEnabled = true
         mMap.setOnMarkerClickListener(this)
+
+        //check current theme mode and set map theme according to it
+        val nightModeFlags = requireContext().resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK
+        when (nightModeFlags) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                activity?.let {
+                    val style = MapStyleOptions.loadRawResourceStyle(
+                        it.applicationContext,
+                        R.raw.map_dark_mode
+                    )
+                    mMap.setMapStyle(style)
+                }
+            }
+            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                activity?.let {
+                    val style = MapStyleOptions.loadRawResourceStyle(
+                        it.applicationContext,
+                        R.raw.map_light_mode
+                    )
+                    mMap.setMapStyle(style)
+                }
+            }
+        }
+
         setUpMap()
     }
 
@@ -52,13 +78,15 @@ class MapFragment : Fragment() , GoogleMap.OnMarkerClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        permissionLaucher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
-        }
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
+        permissionLaucher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            }
+
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext().applicationContext)
-
-
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireContext().applicationContext)
     }
 
     /**
@@ -76,24 +104,26 @@ class MapFragment : Fragment() , GoogleMap.OnMarkerClickListener {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
 
-            permissionLaucher.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION))
+            permissionLaucher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            )
             return
         }
         mMap.isMyLocationEnabled = true
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null){
+            if (location != null) {
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
 
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong,15f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 15f))
 
             }
         }
     }
-
-
-
 
 
 }
