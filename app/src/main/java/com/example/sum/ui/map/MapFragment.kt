@@ -30,7 +30,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
     private lateinit var lastLocation: Location
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var permissionLaucher: ActivityResultLauncher<Array<String>>
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     override fun onMarkerClick(p0: Marker) = false
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -78,7 +78,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        permissionLaucher =
+        permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             }
 
@@ -104,7 +104,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
 
-            permissionLaucher.launch(
+            permissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
