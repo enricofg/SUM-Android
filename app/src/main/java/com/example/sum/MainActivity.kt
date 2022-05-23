@@ -1,43 +1,40 @@
 package com.example.sum
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.sum.databinding.ActivityMainBinding
-import com.example.sum.utility.APIHelper
-import com.example.sum.utility.model.APIInterface
+import com.example.sum.utility.mainViewModel.MainViewModel
+import com.example.sum.utility.mainViewModel.MainViewModelFactory
+import com.example.sum.utility.repository.repository
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import retrofit2.awaitResponse
 
 
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private  lateinit var viewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val stops = APIHelper.RetrofitHelper.getInstance().create(APIInterface::class.java)
+        val repository = repository()
+        val viewModelFactory = MainViewModelFactory(repository)
 
-
-        GlobalScope.launch(Dispatchers.IO)
-        {
-            val response = stops.getStops().awaitResponse();
-            if (response.isSuccessful){
-                val data = response.body()!!
-                Log.d(ContentValues.TAG,data.toString());
-
-            }
-        }
-
-
+        //call api
+        viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+        viewModel.getStops()
+        viewModel.response.observe(this, Observer { response->
+           if(response.isSuccessful){
+               response.body()?.forEach {
+                   Log.d("response",it.Stop_Name )
+               }
+           }
+        })
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
