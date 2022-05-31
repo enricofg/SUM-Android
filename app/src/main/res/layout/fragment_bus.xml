@@ -66,7 +66,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="@string/text_startingpoint"
+            android:contentDescription="@string/common_google_play_services_enable_button"
+            android:textColor="@color/black"
+            android:background="@color/primary_blue"
             android:gravity="center|center_vertical"
             android:minHeight="48dp"
             android:spinnerMode="dropdown"
@@ -145,5 +147,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSearchSchedule" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonSearchSchedule" >
+
+    </ListView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

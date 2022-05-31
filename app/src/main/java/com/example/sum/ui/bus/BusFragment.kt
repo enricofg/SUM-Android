@@ -1,6 +1,8 @@
 package com.example.sum.ui.bus
 
+import android.R
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -9,8 +11,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sum.databinding.FragmentBusBinding
+import com.example.sum.utility.mainViewModel.MainViewModel
+import com.example.sum.utility.mainViewModel.MainViewModelFactory
+import com.example.sum.utility.repository.repository
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,6 +25,9 @@ import java.util.*
 class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
     private var _binding: FragmentBusBinding? = null
+    private lateinit var viewModel: MainViewModel
+
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -29,16 +38,17 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val busViewModel =
-            ViewModelProvider(this)[BusViewModel::class.java]
+        val busViewModel = ViewModelProvider(this)[BusViewModel::class.java]
         _binding = FragmentBusBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         /**fragment variables*/
+
         val startingPointOptions = binding.startingPointOptions
         val dateField = binding.scheduleDateField
         val schedulesList = binding.schedulesResultList
         val searchButton = binding.buttonSearchSchedule
+        val spinner = binding.startingPointOptions
         val dateFormat = SimpleDateFormat("dd/MM/yyyy") //HH:mm"
 
         /*val textView: TextView = binding.textBus
@@ -48,11 +58,28 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
         /**starting point list*/
         //starting point options list
+        val repository = repository()
+        val viewModelFactory = MainViewModelFactory(repository)
+        val stopsList = ArrayList<String>()
+        //call api
+        viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+        viewModel.getStops()
+        viewModel.stops.observe(viewLifecycleOwner, Observer { response->
+            if(response.isSuccessful){
+                response.body()?.forEach {
+                    Log.d("response",it.Stop_Name )
+                    stopsList.add(it.Stop_Name)
+
+                }
+
+            }
+        })
+
         val startingPointListAdapter = activity?.let {
             ArrayAdapter(
                 it,
-                android.R.layout.simple_spinner_item,
-                busViewModel.items
+                R.layout.simple_spinner_item,
+                stopsList
             )
         }
         startingPointOptions.adapter =
@@ -86,8 +113,20 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
         /**search button listener*/
         searchButton.setOnClickListener{
-            Toast.makeText(activity, "Searching for ${startingPointOptions.selectedItem.toString()}'s schedule at ${dateField.text}", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, "Searching for ${startingPointOptions.selectedItem}'s schedule at ${dateField.text}", Toast.LENGTH_LONG).show()
             schedulesList.visibility = View.VISIBLE
+        }
+
+
+        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+            }
+
         }
 
         /**search result list*/
@@ -104,6 +143,7 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         return root
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -113,4 +153,6 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         val options: String = parent?.getItemAtPosition(position) as String
         Toast.makeText(activity, "$options was clicked", Toast.LENGTH_LONG).show()
     }
+
 }
+

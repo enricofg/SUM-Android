@@ -3,6 +3,7 @@ package com.example.sum.ui.bus
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.sum.utility.mainViewModel.MainViewModel
 
 class BusViewModel : ViewModel() {
 
@@ -10,8 +11,9 @@ class BusViewModel : ViewModel() {
         value = "This is the bus status and information fragment"
     }
     val text: LiveData<String> = _text*/
+    private  lateinit var viewModel: MainViewModel
 
-    val items = arrayOf("Stop 1", "Stop 2", "Stop 3", "Stop 4")
+    //val items = arrayOf("Stop 1", "Stop 2", "Stop 3", "Stop 4")
     val schedules = arrayOf(
         "00:00",
         "01:00",

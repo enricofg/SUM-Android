@@ -28,12 +28,13 @@ class MainActivity : BaseActivity() {
         //call api
         viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
         viewModel.getStops()
-        viewModel.response.observe(this, Observer { response->
-           if(response.isSuccessful){
-               response.body()?.forEach {
-                   Log.d("response",it.Stop_Name )
-               }
-           }
+        viewModel.stops.observe(this, Observer { response->
+            if(response.isSuccessful){
+                response.body()?.forEach {
+                    Log.d("response",it.Stop_Name )
+                }
+
+            }
         })
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

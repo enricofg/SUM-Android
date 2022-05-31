@@ -13,12 +13,12 @@ interface APIInterface {
     suspend fun getStops(): Response<Stop>
 
     @GET("Buses")
-    fun getBuses(): Buses
+    suspend fun getBuses(): Response<Buses>
 
     @GET("Lines")
-    fun getLines(): Lines
+    suspend fun getLines(): Response<Lines>
 
     @GET("StopsSchedules")
-    fun getStopsSchedules(): StopSchedule
+    suspend fun getStopsSchedules(): Response<StopSchedule>
 
 }
