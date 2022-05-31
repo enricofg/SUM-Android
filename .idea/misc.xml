@@ -45,7 +45,12 @@
         <entry key="app/src/main/res/drawable/white_border.xml" value="0.1635" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_bus.xml" value="0.3098958333333333" />
+<<<<<<< HEAD
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.38903394255874674" />
+=======
+        <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.11398176291793313" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.234375" />
+>>>>>>> 8cce0d99c9109e434931497901e6d6775f456eb3
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.3098958333333333" />
       </map>
@@ -56,5 +61,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.3098958333333333" />
+      </ProjectState>
+    </option>
   </component>
 </project>

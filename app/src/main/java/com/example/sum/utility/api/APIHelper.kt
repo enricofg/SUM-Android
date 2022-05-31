@@ -6,7 +6,7 @@ import retrofit2.create
 
 object RetrofitInstance {
 
-        const val baseUrl = "https://smarturbanmoving.azurewebsites.net/api/"
+        private const val baseUrl = "https://smarturbanmoving.azurewebsites.net/api/"
         private val retrofit by lazy{
              Retrofit.Builder()
                 .baseUrl(baseUrl)
