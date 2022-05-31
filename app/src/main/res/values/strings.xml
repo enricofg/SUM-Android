@@ -22,4 +22,5 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="auto">Auto</string>
+    <string name="map_search_box">Enter Address, City or Zip Code</string>
 </resources>
