@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -66,12 +67,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="@string/common_google_play_services_enable_button"
-            android:textColor="@color/black"
-            android:background="@color/primary_blue"
+            android:backgroundTint="?attr/colorSecondary"
+            android:contentDescription="@string/text_startingpoint"
             android:gravity="center|center_vertical"
             android:minHeight="48dp"
             android:spinnerMode="dropdown"
+            android:textAlignment="viewStart"
             tools:ignore="DuplicateSpeakableTextCheck" />
 
     </LinearLayout>
@@ -109,6 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:autofillHints=""
+            android:backgroundTint="?attr/colorSecondary"
             android:ems="10"
             android:inputType="datetime"
             android:labelFor="@id/textView3"

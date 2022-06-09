@@ -7,4 +7,8 @@ data class StopItem(
     val Stop_Id: Int,
     val Stop_Name: String,
     val sc: List<Sc>
-)
+){
+    override fun toString(): String {
+        return Stop_Name
+    }
+}

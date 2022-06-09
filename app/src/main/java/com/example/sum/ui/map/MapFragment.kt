@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -27,7 +24,7 @@ import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
 import com.example.sum.utility.model.data.stops.Stop
 import com.example.sum.utility.model.data.stops.StopItem
-import com.example.sum.utility.repository.repository
+import com.example.sum.utility.repository.Repository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -39,7 +36,6 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import java.io.IOException
-import java.util.*
 
 
 class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
@@ -47,8 +43,8 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
     private lateinit var lastLocation: Location
     private lateinit var mMap: GoogleMap
     private lateinit var Adress: Stop
-    private lateinit var ViewModel:MainViewModel
-    private var adrees: StopItem? = null
+    private lateinit var ViewModel: MainViewModel
+    private var adress: StopItem? = null
     private var AddressList: List<String> = emptyList()
     private lateinit var input_search: AutoCompleteTextView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -87,10 +83,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
         }
 
         setUpMap()
-
-
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,31 +93,30 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         input_search = view.findViewById<AutoCompleteTextView>(R.id.input_search)
-        val viewModelFactory = MainViewModelFactory(repository())
+        val viewModelFactory = MainViewModelFactory(Repository())
 
-        ViewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+        ViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         ViewModel.getStops()
-        ViewModel.stops.observe(viewLifecycleOwner, Observer { response->
+        ViewModel.stops.observe(viewLifecycleOwner, Observer { response ->
 
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
 
-                Adress = response.body()!!;
+                Adress = response.body()!!
                 Log.d("address", Adress.toString())
                 if (AddressList.count() != Adress.count()) {
                     Adress.forEach {
-                        AddressList += listOf<String>(it.Stop_Name)
+                        AddressList = AddressList + listOf(it.Stop_Name)
                         if (AddressList.count() == Adress.count()) {
                             val adapter = ArrayAdapter(
                                 requireContext().applicationContext,
                                 android.R.layout.simple_list_item_1,
-                                AddressList!!
+                                AddressList
                             )
 
                             input_search.setAdapter(adapter)
                         }
                     }
                 }
-
             }
         })
 
@@ -135,7 +127,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
                 if (event.action == KeyEvent.ACTION_DOWN &&
                     keyCode == KeyEvent.KEYCODE_ENTER
                 ) {
-                    Log.d("message",input_search.text.toString())
+                    Log.d("message", input_search.text.toString())
                     geolocation(input_search.text.toString())
                     return true
                 }
@@ -173,7 +165,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
             ActivityCompat.checkSelfPermission(
                 requireContext().applicationContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED&&
+            ) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(
                 requireContext().applicationContext,
                 Manifest.permission.INTERNET
@@ -195,34 +187,29 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
 
-
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 15f))
-
             }
         }
     }
 
-
-    private fun geolocation(PossibleLocation: String){
-
+    private fun geolocation(PossibleLocation: String) {
         try {
-
-                adrees = Adress.find { it ->
-                    it.Stop_Name.lowercase().contains(PossibleLocation.lowercase())
-                }
+            adress = Adress.find {
+                it.Stop_Name.lowercase().contains(PossibleLocation.lowercase())
+            }
 
         } catch (e: IOException) {
             Log.e("MapLocationError", "geoLocate: IOException: $e")
         }
         // if the user input is an valid address this piece of code will transport the user to the location and set up a marker
-        if (adrees != null) {
+        if (adress != null) {
 
             mMap.clear()
-            val currentLatLong = LatLng(adrees!!.Latitude, adrees!!.Longitude)
+            val currentLatLong = LatLng(adress!!.Latitude, adress!!.Longitude)
             mMap.addMarker(
                 MarkerOptions()
                     .position(currentLatLong)
-                    .title(adrees!!.Stop_Name)
+                    .title(adress!!.Stop_Name)
             )
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 15f))
             //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();

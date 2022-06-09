@@ -14,6 +14,9 @@ interface APIInterface {
     @GET("stops")
     suspend fun getStops(): Response<Stop>
 
+    @GET("stops/{id}")
+    suspend fun getStop(@Path("id")id: Int): Response<Stop>
+
     @GET("Buses")
     suspend fun getBuses(): Response<Buses>
 
@@ -24,6 +27,6 @@ interface APIInterface {
     suspend fun getStopsSchedules(): Response<StopsList>
 
     @GET("StopsSchedules/{id}")
-    suspend fun getStopsSchedules2(@Path("id")id: Int): Response<StopsList>
+    suspend fun getStopsSchedule(@Path("id")id: Int): Response<StopsList>
 
 }

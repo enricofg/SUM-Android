@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.sum.databinding.ActivityMainBinding
 import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
-import com.example.sum.utility.repository.repository
+import com.example.sum.utility.repository.Repository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -22,7 +22,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val repository = repository()
+        val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
 
         //call api

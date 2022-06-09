@@ -14,7 +14,7 @@
         <item name="colorSecondary">@color/gold</item>
         <item name="colorSecondaryVariant">@color/gold_dark</item>
         <item name="colorOnSecondary">@color/dark_gold_contrast</item>
-        <item name="backgroundTint">@color/gold</item>
+        <!--<item name="backgroundTint">@color/gold</item>-->
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:windowActionBar">false</item>

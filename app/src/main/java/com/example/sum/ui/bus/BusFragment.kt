@@ -1,8 +1,8 @@
 package com.example.sum.ui.bus
 
 import android.R
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.sum.databinding.FragmentBusBinding
 import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
-import com.example.sum.utility.repository.repository
+import com.example.sum.utility.model.data.stops.StopItem
+import com.example.sum.utility.repository.Repository
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,12 +28,11 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
     private var _binding: FragmentBusBinding? = null
     private lateinit var viewModel: MainViewModel
 
-
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,54 +43,55 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         val root: View = binding.root
 
         /**fragment variables*/
-
         val startingPointOptions = binding.startingPointOptions
         val dateField = binding.scheduleDateField
         val schedulesList = binding.schedulesResultList
         val searchButton = binding.buttonSearchSchedule
-        val spinner = binding.startingPointOptions
         val dateFormat = SimpleDateFormat("dd/MM/yyyy") //HH:mm"
-
-        /*val textView: TextView = binding.textBus
-        busViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }*/
 
         /**starting point list*/
         //starting point options list
-        val repository = repository()
+        val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
-        val stopsList = ArrayList<String>()
+
         //call api
-        viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewModel.getStops()
-        viewModel.stops.observe(viewLifecycleOwner, Observer { response->
-            if(response.isSuccessful){
+        viewModel.stops.observe(viewLifecycleOwner, Observer { response ->
+            if (response.isSuccessful) {
+                busViewModel.stopsList.clear()
+                busViewModel.stopsList.add(StopItem(0.0, 0, 0.0, -1, "Show all", emptyList()))
+                busViewModel.selectedStop = busViewModel.stopsList[0]
+
                 response.body()?.forEach {
-                    Log.d("response",it.Stop_Name )
-                    stopsList.add(it.Stop_Name)
+                    busViewModel.stopsList.add(it)
+
+                    val stopsAdapter: ArrayAdapter<StopItem>? = activity?.let { activity ->
+                        ArrayAdapter(
+                            activity,
+                            R.layout.simple_spinner_dropdown_item,
+                            busViewModel.stopsList
+                        )
+                    }
+                    startingPointOptions.adapter =
+                        stopsAdapter //set the list adapter for the starting point options view element
                 }
             }
         })
 
-        viewModel.getStopsSchedules(3) /***para remover ****/
-        viewModel.stopSchedule.observe(viewLifecycleOwner, Observer { response->
-            if(response.isSuccessful){
-                response.body()?.forEach {
-                    Log.d("response",it.Line_Name )
-                }
+        startingPointOptions.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-        })
 
-        val startingPointListAdapter = activity?.let {
-            ArrayAdapter(
-                it,
-                R.layout.simple_spinner_item,
-                stopsList
-            )
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                busViewModel.selectedStop = busViewModel.stopsList[position]
+            }
         }
-        startingPointOptions.adapter =
-            startingPointListAdapter //set the list adapter for the starting point optins view element
 
         /**date picker*/
         //material design date picker instantiation
@@ -119,32 +120,54 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         }
 
         /**search button listener*/
-        searchButton.setOnClickListener{
-            Toast.makeText(activity, "Searching for ${startingPointOptions.selectedItem}'s schedule at ${dateField.text}", Toast.LENGTH_LONG).show()
+        var stopName: String
+
+        searchButton.setOnClickListener {
+            stopName=""
+
+            if (busViewModel.selectedStop.Stop_Id == -1) {
+                viewModel.getStopsSchedules()
+            } else {
+                viewModel.getStopsSchedules(busViewModel.selectedStop.Stop_Id)
+            }
+
+            viewModel.stopSchedule.observe(viewLifecycleOwner, Observer { response ->
+                busViewModel.stopsSchedules.clear()
+                if (response.isSuccessful) {
+                    response.body()?.forEach {
+                        for (stopSchedule in it.StopSchedule) {
+                            viewModel.getStops(0) //TODO: change to stopSchedule.Stop_Id, wait for name to be assigned
+                            viewModel.stopsName.observe(viewLifecycleOwner, Observer { response ->
+                                if (response.isSuccessful) {
+                                    response.body()?.forEach { stopItem ->
+                                        stopName = stopItem.Stop_Name
+                                    }
+                                }
+                            })
+
+                            val item = StopNameSchedule(
+                                it.Line_Name,
+                                stopName,
+                                stopSchedule.Schedule_Time
+                            )
+                            busViewModel.stopsSchedules.add(item)
+
+                            /**search result list*/
+                            val searchResultListAdapter: ArrayAdapter<StopNameSchedule>? =
+                                activity?.let { activity ->
+                                    ArrayAdapter(
+                                        activity,
+                                        R.layout.simple_list_item_1,
+                                        busViewModel.stopsSchedules
+                                    )
+                                }
+                            schedulesList.adapter = searchResultListAdapter
+                        }
+                    }
+                }
+            })
             schedulesList.visibility = View.VISIBLE
         }
-
-
-        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-            }
-
-        }
-
-        /**search result list*/
-        val searchResultListAdapter = activity?.let {
-            ArrayAdapter(
-                it,
-                android.R.layout.simple_list_item_1,
-                busViewModel.schedules
-            )
-        }
-        schedulesList.adapter = searchResultListAdapter
         schedulesList.onItemClickListener = this
 
         return root
@@ -157,7 +180,7 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val options: String = parent?.getItemAtPosition(position) as String
+        val options: String = parent?.getItemAtPosition(position).toString()
         Toast.makeText(activity, "$options was clicked", Toast.LENGTH_LONG).show()
     }
 
