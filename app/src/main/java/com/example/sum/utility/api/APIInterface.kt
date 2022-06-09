@@ -6,6 +6,7 @@ import com.example.sum.utility.model.data.stops.Stop
 import com.example.sum.utility.model.data.stopsSchedules.StopSchedule
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 
 interface APIInterface {
@@ -20,5 +21,8 @@ interface APIInterface {
 
     @GET("StopsSchedules")
     suspend fun getStopsSchedules(): Response<StopSchedule>
+
+    @GET("StopsSchedule/{id}")
+    suspend fun getStopsSchedule(@Path("id") id: Int): Response<StopSchedule>
 
 }

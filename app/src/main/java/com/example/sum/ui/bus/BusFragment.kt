@@ -74,6 +74,17 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
             }
         })
+        viewModel.getStopsSchedules(3)
+        viewModel.stops.observe(viewLifecycleOwner, Observer { response->
+            if(response.isSuccessful){
+                response.body()?.forEach {
+                    Log.d("response",it.Stop_Name )
+                    stopsList.add(it.Stop_Name)
+
+                }
+
+            }
+        })
 
         val startingPointListAdapter = activity?.let {
             ArrayAdapter(

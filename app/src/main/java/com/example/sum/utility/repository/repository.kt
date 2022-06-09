@@ -20,4 +20,8 @@ class repository {
     suspend fun getStopsSchedules(): Response<StopSchedule> {
         return RetrofitInstance.api.getStopsSchedules()
     }
+    suspend fun getStopsSchedules(id:Int): Response<StopSchedule> {
+        return RetrofitInstance.api.getStopsSchedule(id)
+    }
+
 }

@@ -104,7 +104,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
         ViewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
         ViewModel.getStops()
-        ViewModel.response.observe(viewLifecycleOwner, Observer { response->
+        ViewModel.stops.observe(viewLifecycleOwner, Observer { response->
 
             if(response.isSuccessful){
 

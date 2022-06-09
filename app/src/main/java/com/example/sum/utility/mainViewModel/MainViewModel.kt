@@ -41,4 +41,10 @@ class MainViewModel(private val repository: repository) : ViewModel() {
             this@MainViewModel.stopsStopSchedule.value= response
         }
     }
+    fun getStopsSchedules(id: Int){
+        viewModelScope.launch {
+            val response: Response<StopSchedule> = repository.getStopsSchedules(id)
+            this@MainViewModel.stopsStopSchedule.value= response
+        }
+    }
 }
