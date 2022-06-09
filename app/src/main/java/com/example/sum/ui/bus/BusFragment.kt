@@ -69,20 +69,16 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
                 response.body()?.forEach {
                     Log.d("response",it.Stop_Name )
                     stopsList.add(it.Stop_Name)
-
                 }
-
             }
         })
-        viewModel.getStopsSchedules(3)
-        viewModel.stops.observe(viewLifecycleOwner, Observer { response->
+
+        viewModel.getStopsSchedules(3) /***para remover ****/
+        viewModel.stopSchedule.observe(viewLifecycleOwner, Observer { response->
             if(response.isSuccessful){
                 response.body()?.forEach {
-                    Log.d("response",it.Stop_Name )
-                    stopsList.add(it.Stop_Name)
-
+                    Log.d("response",it.Line_Name )
                 }
-
             }
         })
 

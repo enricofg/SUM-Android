@@ -4,6 +4,7 @@ import com.example.sum.utility.model.data.buses.Buses
 import com.example.sum.utility.model.data.lines.Lines
 import com.example.sum.utility.model.data.stops.Stop
 import com.example.sum.utility.model.data.stopsSchedules.StopSchedule
+import com.example.sum.utility.model.data.stopsSchedules.StopsList
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -20,9 +21,9 @@ interface APIInterface {
     suspend fun getLines(): Response<Lines>
 
     @GET("StopsSchedules")
-    suspend fun getStopsSchedules(): Response<StopSchedule>
+    suspend fun getStopsSchedules(): Response<StopsList>
 
-    @GET("StopsSchedule/{id}")
-    suspend fun getStopsSchedule(@Path("id") id: Int): Response<StopSchedule>
+    @GET("StopsSchedules/{id}")
+    suspend fun getStopsSchedules2(@Path("id")id: Int): Response<StopsList>
 
 }
