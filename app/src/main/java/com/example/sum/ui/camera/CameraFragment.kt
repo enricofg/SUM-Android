@@ -2,7 +2,6 @@ package com.example.sum.ui.camera
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ class CameraFragment : Fragment() {
 
         searchButton.setOnClickListener{
             activity?.let{
-                val intent = Intent (it, CameraActivity::class.java)
+                val intent = Intent (it, GeoCameraActivity::class.java)
                 it.startActivity(intent)
             }
         }

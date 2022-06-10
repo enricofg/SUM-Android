@@ -23,7 +23,10 @@
         android:theme="@style/Theme.SUM">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" /> <!-- set in the local.properties file so each dev can have his own key -->
+            android:value="${MAPS_API_KEY}" />
+        <meta-data
+            android:name="com.google.android.ar.API_KEY"
+            android:value="${AR_API_KEY}" />
         <meta-data
             android:name="com.google.ar.core"
             android:value="optional" />
@@ -32,7 +35,7 @@
             android:value="ocr" />
 
         <activity
-            android:name=".ui.camera.CameraActivity"
+            android:name=".ui.camera.GeoCameraActivity"
             android:exported="true"/>
         <activity
             android:name=".ui.camera.StillImageActivity"
