@@ -20,13 +20,29 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/primary_blue</item>
-        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_foreground</item>
-        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/light_blue</item>
-        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/ic_politecnico_h_branco</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/primary_blue
+        </item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">
+            @drawable/ic_launcher_foreground
+        </item>
+        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">
+            @color/light_blue
+        </item>
+        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">
+            @drawable/ic_politecnico_h_branco
+        </item>
     </style>
 
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/blue</item>
     </style>
+
+    <style name="Theme.SUM.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.SUM.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.SUM.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

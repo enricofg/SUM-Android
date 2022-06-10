@@ -3,9 +3,13 @@
     package="com.example.sum">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
@@ -20,16 +24,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SUM">
-
-        <!--chave diogo: AIzaSyCNiAQ-XwLYPHyQfBtfOKCs5pcrtFRShCM-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" /> <!--set in the local.properties file so each dev can have his own key-->
-
+            android:value="${MAPS_API_KEY}" /> <!-- set in the local.properties file so each dev can have his own key -->
         <meta-data
             android:name="com.google.ar.core"
             android:value="optional" />
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="ocr" />
 
+        <activity
+            android:name=".ui.camera.CameraActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.camera.StillImageActivity"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -40,4 +50,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

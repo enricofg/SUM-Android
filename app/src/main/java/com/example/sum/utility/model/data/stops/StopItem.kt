@@ -6,6 +6,7 @@ data class StopItem(
     val Longitude: Double,
     val Stop_Id: Int,
     val Stop_Name: String,
+    val Schedule_Time: String,
     val sc: List<Sc>
 ){
     override fun toString(): String {

@@ -29,8 +29,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun getStops(id: Int) {
         viewModelScope.launch {
-            //val response: Response<Stop> = repository.getStop(id)
-            val response: Response<Stop> = repository.getStops()
+            val response: Response<Stop> = repository.getStop(id)
             stopsName.value = response
         }
     }

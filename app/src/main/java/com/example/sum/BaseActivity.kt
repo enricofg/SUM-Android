@@ -2,13 +2,13 @@ package com.example.sum
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import com.example.sum.utility.LocaleHelper
+import com.example.sum.utility.PreferenceUtils
 
 open class BaseActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(
-            LocaleHelper.updateBaseContextLocale(newBase)
+            PreferenceUtils.updateBaseContextLocale(newBase)
         )
     }
 }

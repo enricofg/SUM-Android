@@ -60,7 +60,7 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         viewModel.stops.observe(viewLifecycleOwner, Observer { response ->
             if (response.isSuccessful) {
                 busViewModel.stopsList.clear()
-                busViewModel.stopsList.add(StopItem(0.0, 0, 0.0, -1, "Show all", emptyList()))
+                busViewModel.stopsList.add(StopItem(0.0, 0, 0.0, -1, "Show all", "", emptyList()))
                 busViewModel.selectedStop = busViewModel.stopsList[0]
 
                 response.body()?.forEach {
@@ -136,7 +136,7 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
                 if (response.isSuccessful) {
                     response.body()?.forEach {
                         for (stopSchedule in it.StopSchedule) {
-                            viewModel.getStops(0) //TODO: change to stopSchedule.Stop_Id, wait for name to be assigned
+                            viewModel.getStops(stopSchedule.Stop_Id) //TODO: change to stopSchedule.Stop_Id, wait for name to be assigned
                             viewModel.stopsName.observe(viewLifecycleOwner, Observer { response ->
                                 if (response.isSuccessful) {
                                     response.body()?.forEach { stopItem ->
