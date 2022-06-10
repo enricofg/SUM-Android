@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,8 +22,10 @@ import com.example.sum.utility.mlkit.GraphicOverlay
 import com.example.sum.utility.mlkit.TextRecognitionProcessor
 import com.example.sum.utility.mlkit.VisionImageProcessor
 import com.google.android.gms.common.annotation.KeepName
+import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.IOException
+
 
 /** Activity demonstrating different image detector features with a still image from camera.  */
 @KeepName
@@ -201,31 +202,12 @@ class StillImageActivity : AppCompatActivity() {
             // Clear the overlay first
             graphicOverlay!!.clear()
 
-            val resizedBitmap: Bitmap = if (selectedSize == SIZE_ORIGINAL) {
-                imageBitmap
-            } else {
-                // Get the dimensions of the image view
-                val targetedSize: Pair<Int, Int> = targetedWidthHeight
-
-                // Determine how much to scale down the image
-                val scaleFactor = Math.max(
-                    imageBitmap.width.toFloat() / targetedSize.first.toFloat(),
-                    imageBitmap.height.toFloat() / targetedSize.second.toFloat()
-                )
-                Bitmap.createScaledBitmap(
-                    imageBitmap,
-                    (imageBitmap.width / scaleFactor).toInt(),
-                    (imageBitmap.height / scaleFactor).toInt(),
-                    true
-                )
-            }
-
-            preview!!.setImageBitmap(resizedBitmap)
+            preview!!.setImageBitmap(imageBitmap)
             if (imageProcessor != null) {
                 graphicOverlay!!.setImageSourceInfo(
-                    resizedBitmap.width, resizedBitmap.height, /* isFlipped= */false
+                    imageBitmap.width, imageBitmap.height, /* isFlipped= */false
                 )
-                imageProcessor!!.processBitmap(resizedBitmap, graphicOverlay)
+                imageProcessor!!.processBitmap(imageBitmap, graphicOverlay)
             } else {
                 Log.e(
                     TAG,
@@ -240,28 +222,6 @@ class StillImageActivity : AppCompatActivity() {
             imageUri = null
         }
     }
-
-    private val targetedWidthHeight: Pair<Int, Int>
-        get() {
-            val targetWidth: Int
-            val targetHeight: Int
-            when (selectedSize) {
-                SIZE_SCREEN -> {
-                    targetWidth = imageMaxWidth
-                    targetHeight = imageMaxHeight
-                }
-                SIZE_640_480 -> {
-                    targetWidth = if (isLandScape) 640 else 480
-                    targetHeight = if (isLandScape) 480 else 640
-                }
-                SIZE_1024_768 -> {
-                    targetWidth = if (isLandScape) 1024 else 768
-                    targetHeight = if (isLandScape) 768 else 1024
-                }
-                else -> throw IllegalStateException("Unknown size")
-            }
-            return Pair(targetWidth, targetHeight)
-        }
 
     private fun createImageProcessor() {
         try {
@@ -295,9 +255,6 @@ class StillImageActivity : AppCompatActivity() {
         private const val TEXT_RECOGNITION_LATIN = "Text Recognition Latin"
 
         private const val SIZE_SCREEN = "w:screen" // Match screen width
-        private const val SIZE_1024_768 = "w:1024" // ~1024*768 in a normal ratio
-        private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio
-        private const val SIZE_ORIGINAL = "w:original" // Original image size
         private const val KEY_IMAGE_URI = "com.example.sum.utility.mlkit.KEY_IMAGE_URI"
         private const val KEY_IMAGE_MAX_WIDTH = "com.example.sum.utility.mlkit.KEY_IMAGE_MAX_WIDTH"
         private const val KEY_IMAGE_MAX_HEIGHT = "com.example.sum.utility.mlkit.KEY_IMAGE_MAX_HEIGHT"
