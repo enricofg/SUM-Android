@@ -109,6 +109,7 @@ class GeoRenderer(val activity: GeoCameraActivity) :
     private val repository = Repository()
     private val viewModelFactory = MainViewModelFactory(repository)
     private var loaded = false
+    var stopId: Int = -1
 
     override fun onDrawFrame(render: SampleRender) {
         val session = session ?: return
@@ -196,7 +197,9 @@ class GeoRenderer(val activity: GeoCameraActivity) :
             val handler = Handler(Looper.getMainLooper())
             handler.post {
                 run {
-                    loadStopOnMap(3)
+                    if(stopId>=0){
+                        loadStopOnMap(stopId)
+                    }
                 }
             }
         }

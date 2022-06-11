@@ -1,8 +1,6 @@
 package com.example.sum.ui.camera
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,16 +26,12 @@ class GeoCameraActivity : AppCompatActivity() {
   lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
   lateinit var view: GeoView
   lateinit var renderer: GeoRenderer
-  var position: Int = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     // Setup ARCore session lifecycle helper and configuration.
     arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
-
-
-    position = intent.getIntExtra("stopId", -1)
 
     // If Session creation or Session.resume() fails, display a message and log detailed
     // information.
@@ -63,6 +57,7 @@ class GeoCameraActivity : AppCompatActivity() {
 
     // Set up the Hello AR renderer.
     renderer = GeoRenderer(this)
+    renderer.stopId = intent.getIntExtra("stopId", -1)
     lifecycle.addObserver(renderer)
 
     // Set up Hello AR UI.

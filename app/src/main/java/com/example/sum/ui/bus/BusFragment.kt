@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,6 +29,7 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
     private var _binding: FragmentBusBinding? = null
     private lateinit var viewModel: MainViewModel
+    lateinit var busViewModel: BusViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -39,15 +41,7 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
-        val pref = sharedPreference.getString("ScheduleTime",null)
-        if(pref != null){
-
-            //sharedPreference.edit().clear().apply()
-
-        }
-        val busViewModel = ViewModelProvider(this)[BusViewModel::class.java]
+        busViewModel = ViewModelProvider(this)[BusViewModel::class.java]
         _binding = FragmentBusBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -129,40 +123,52 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
         /**search button listener*/
         searchButton.setOnClickListener {
-            viewModel.getStopsSchedules(busViewModel.selectedStop.Stop_Id)
-            viewModel.stopSchedule.observe(viewLifecycleOwner, Observer { response ->
-                busViewModel.stopsSchedules.clear()
-                if (response.isSuccessful) {
-                    response.body()?.forEach {
-                        for (stopSchedule in it.StopSchedule) {
-                            val item = StopNameSchedule(
-                                it.Line_Name,
-                                busViewModel.selectedStop.Stop_Name,
-                                stopSchedule.Schedule_Time
-                            )
-                            busViewModel.stopsSchedules.add(item)
-
-                            /**search result list*/
-                            val searchResultListAdapter: ArrayAdapter<StopNameSchedule>? =
-                                activity?.let { activity ->
-                                    ArrayAdapter(
-                                        activity,
-                                        R.layout.simple_list_item_1,
-                                        busViewModel.stopsSchedules
-                                    )
-                                }
-                            schedulesList.adapter = searchResultListAdapter
-                        }
-                    }
-                }
-            })
-            schedulesList.visibility = View.VISIBLE
+            getSchedules(schedulesList)
         }
         schedulesList.onItemClickListener = this
+
+
+        val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
+        val pref = sharedPreference.getString("ScheduleTime",null)
+        if(pref != null){
+            getSchedules(schedulesList)
+            //sharedPreference.edit().clear().apply()
+
+        }
 
         return root
     }
 
+    private fun getSchedules(schedulesList: ListView) {
+        viewModel.getStopsSchedules(busViewModel.selectedStop.Stop_Id)
+        viewModel.stopSchedule.observe(viewLifecycleOwner, Observer { response ->
+            busViewModel.stopsSchedules.clear()
+            if (response.isSuccessful) {
+                response.body()?.forEach {
+                    for (stopSchedule in it.StopSchedule) {
+                        val item = StopNameSchedule(
+                            it.Line_Name,
+                            busViewModel.selectedStop.Stop_Name,
+                            stopSchedule.Schedule_Time
+                        )
+                        busViewModel.stopsSchedules.add(item)
+
+                        /**search result list*/
+                        val searchResultListAdapter: ArrayAdapter<StopNameSchedule>? =
+                            activity?.let { activity ->
+                                ArrayAdapter(
+                                    activity,
+                                    R.layout.simple_list_item_1,
+                                    busViewModel.stopsSchedules
+                                )
+                            }
+                        schedulesList.adapter = searchResultListAdapter
+                    }
+                }
+            }
+        })
+        schedulesList.visibility = View.VISIBLE
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

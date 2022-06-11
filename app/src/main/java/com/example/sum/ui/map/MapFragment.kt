@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.IOException
 
 
@@ -111,9 +112,11 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
         val fragment = BusFragment()
         if(pref != null) {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.map_fragment, fragment).addToBackStack("MapToSchedule").commit()
+/*            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.map_fragment, fragment).addToBackStack("MapToSchedule").commit()*/
 
+            (requireActivity().findViewById<View>(R.id.nav_host_fragment_activity_main) as BottomNavigationView).selectedItemId =
+                R.id.navigation_schedules
         }
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
