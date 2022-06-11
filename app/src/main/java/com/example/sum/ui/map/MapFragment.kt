@@ -108,15 +108,13 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
     ): View? {
 
         val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
-        val pref = sharedPreference.getString("ScheduleTime",null)
+        val pref = sharedPreference.getInt("ScheduleTime",0)
 
         val fragment = BusFragment()
-        if(pref != null) {
-/*            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.map_fragment, fragment).addToBackStack("MapToSchedule").commit()*/
+        if(pref !=0) {
+          requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.map_fragment, fragment).addToBackStack("MapToSchedule").commit()
 
-            (requireActivity().findViewById<View>(R.id.nav_host_fragment_activity_main) as BottomNavigationView).selectedItemId =
-                R.id.navigation_schedules
         }
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)

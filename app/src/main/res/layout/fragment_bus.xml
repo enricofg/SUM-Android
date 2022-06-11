@@ -5,6 +5,7 @@
     android:id="@+id/SchedularBus"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
     tools:context=".ui.bus.BusFragment">
 
     <LinearLayout

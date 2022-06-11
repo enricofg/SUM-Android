@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sum.databinding.FragmentBusBinding
+
 import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
 import com.example.sum.utility.model.data.stops.StopItem
@@ -130,15 +131,19 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
         val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
         val stopId = sharedPreference.getInt("ScheduleTime",-1)
-        if(stopId != null){
+        val stopName = sharedPreference.getString("ScheduleName","null")
+
+        if(stopId >-1){
+            busViewModel.selectedStop = StopItem(0.0,0,0.0,-1,stopName as String,"qwww", emptyList())
             getSchedules(schedulesList, stopId)
+            sharedPreference.edit().clear().apply()
         }
 
         return root
     }
 
     private fun getSchedules(schedulesList: ListView, stopId:Int) {
-        if(stopId>=0){
+        if(stopId>-1){
             viewModel.getStopsSchedules(stopId)
         } else {
             return

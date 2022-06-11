@@ -198,8 +198,8 @@ class GeoRenderer(val activity: GeoCameraActivity) :
             handler.post {
                 run {
                     if(stopId>=0){
-                        loadStopOnMap(stopId)
                     }
+                        loadStopOnMap(4)
                 }
             }
         }
