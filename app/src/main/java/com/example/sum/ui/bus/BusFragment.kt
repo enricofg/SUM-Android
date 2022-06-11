@@ -129,11 +129,9 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
 
 
         val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
-        val stopId = sharedPreference.getString("ScheduleTime","-1")
+        val stopId = sharedPreference.getInt("ScheduleTime",-1)
         if(stopId != null){
-            getSchedules(schedulesList, stopId.toInt())
-            //sharedPreference.edit().clear().apply()
-
+            getSchedules(schedulesList, stopId)
         }
 
         return root
@@ -151,9 +149,14 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
             if (response.isSuccessful) {
                 response.body()?.forEach {
                     for (stopSchedule in it.StopSchedule) {
+                        var stopName:String = if(stopId>=-1){
+                            busViewModel.selectedStop.Stop_Name
+                        } else{
+                            "TEST"
+                        }
                         val item = StopNameSchedule(
                             it.Line_Name,
-                            busViewModel.selectedStop.Stop_Name,
+                            stopName,
                             stopSchedule.Schedule_Time
                         )
                         busViewModel.stopsSchedules.add(item)
