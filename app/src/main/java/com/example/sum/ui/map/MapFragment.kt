@@ -2,6 +2,7 @@ package com.example.sum.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -21,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sum.R
+import com.example.sum.ui.bus.BusFragment
 import com.example.sum.ui.camera.GeoCameraActivity
 import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
@@ -103,6 +105,16 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
+        val pref = sharedPreference.getString("ScheduleTime",null)
+
+        val fragment = BusFragment()
+        if(pref != null) {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.map_fragment, fragment).addToBackStack("MapToSchedule").commit()
+
+        }
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         input_search = view.findViewById<AutoCompleteTextView>(R.id.input_search)

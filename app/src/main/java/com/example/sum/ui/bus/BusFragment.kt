@@ -2,6 +2,7 @@ package com.example.sum.ui.bus
 
 import android.R
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -38,6 +39,14 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        val sharedPreference =  requireActivity().getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
+        val pref = sharedPreference.getString("ScheduleTime",null)
+        if(pref != null){
+
+            //sharedPreference.edit().clear().apply()
+
+        }
         val busViewModel = ViewModelProvider(this)[BusViewModel::class.java]
         _binding = FragmentBusBinding.inflate(inflater, container, false)
         val root: View = binding.root

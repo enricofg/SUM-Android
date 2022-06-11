@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.sum.DialogFlow
 import com.example.sum.databinding.FragmentCameraBinding
 
 class CameraFragment : Fragment() {
@@ -25,14 +26,19 @@ class CameraFragment : Fragment() {
         val root: View = binding.root
         val searchButton = binding.buttonOpenARNavigation
         val ocrButton = binding.buttonOpenOCR
-
+        val dialog = binding.buttonOpenDialogFlow
         searchButton.setOnClickListener{
             activity?.let{
                 val intent = Intent (it, GeoCameraActivity::class.java)
                 it.startActivity(intent)
             }
         }
-
+        dialog.setOnClickListener {
+            activity?.let {
+                val intent = Intent(it, DialogFlow::class.java)
+                startActivity(intent)
+            }
+        }
         ocrButton.setOnClickListener{
             activity?.let{
                 val intent = Intent (it, StillImageActivity::class.java)
