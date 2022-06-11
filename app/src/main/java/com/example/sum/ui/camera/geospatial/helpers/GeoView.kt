@@ -26,13 +26,13 @@ class GeoView(val activity: GeoCameraActivity) : DefaultLifecycleObserver {
     val snackbarHelper = SnackbarHelper()
 
     var mapView: MapView? = null
-    val mapTouchWrapper = root.findViewById<MapTouchWrapper>(R.id.map_wrapper).apply {
+    /*val mapTouchWrapper = root.findViewById<MapTouchWrapper>(R.id.map_wrapper).apply {
         setup { screenLocation ->
             val latLng: LatLng =
                 mapView?.googleMap?.projection?.fromScreenLocation(screenLocation) ?: return@setup
             activity.renderer.onMapClick(latLng)
         }
-    }
+    }*/
     val mapFragment =
         (activity.supportFragmentManager.findFragmentById(R.id.map)!! as SupportMapFragment).also {
             it.getMapAsync { googleMap -> mapView = MapView(activity, googleMap) }

@@ -60,9 +60,8 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         viewModel.stops.observe(viewLifecycleOwner, Observer { response ->
             if (response.isSuccessful) {
                 busViewModel.stopsList.clear()
-                busViewModel.stopsList.add(StopItem(0.0, 0, 0.0, -1, "Show all", "", emptyList()))
-                busViewModel.selectedStop = busViewModel.stopsList[0]
-
+                /*busViewModel.stopsList.add(StopItem(0.0, 0, 0.0, -1, "Show all", "", emptyList()))
+                busViewModel.selectedStop = busViewModel.stopsList[0]*/
                 response.body()?.forEach {
                     busViewModel.stopsList.add(it)
 
@@ -120,34 +119,16 @@ class BusFragment : Fragment(), AdapterView.OnItemClickListener {
         }
 
         /**search button listener*/
-        var stopName: String
-
         searchButton.setOnClickListener {
-            stopName=""
-
-            if (busViewModel.selectedStop.Stop_Id == -1) {
-                viewModel.getStopsSchedules()
-            } else {
-                viewModel.getStopsSchedules(busViewModel.selectedStop.Stop_Id)
-            }
-
+            viewModel.getStopsSchedules(busViewModel.selectedStop.Stop_Id)
             viewModel.stopSchedule.observe(viewLifecycleOwner, Observer { response ->
                 busViewModel.stopsSchedules.clear()
                 if (response.isSuccessful) {
                     response.body()?.forEach {
                         for (stopSchedule in it.StopSchedule) {
-                            viewModel.getStops(stopSchedule.Stop_Id) //TODO: change to stopSchedule.Stop_Id, wait for name to be assigned
-                            viewModel.stopsName.observe(viewLifecycleOwner, Observer { response ->
-                                if (response.isSuccessful) {
-                                    response.body()?.forEach { stopItem ->
-                                        stopName = stopItem.Stop_Name
-                                    }
-                                }
-                            })
-
                             val item = StopNameSchedule(
                                 it.Line_Name,
-                                stopName,
+                                busViewModel.selectedStop.Stop_Name,
                                 stopSchedule.Schedule_Time
                             )
                             busViewModel.stopsSchedules.add(item)

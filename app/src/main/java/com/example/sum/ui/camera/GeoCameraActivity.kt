@@ -1,6 +1,8 @@
 package com.example.sum.ui.camera
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,12 +28,17 @@ class GeoCameraActivity : AppCompatActivity() {
   lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
   lateinit var view: GeoView
   lateinit var renderer: GeoRenderer
+  var position: Int = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     // Setup ARCore session lifecycle helper and configuration.
     arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
+
+
+    position = intent.getIntExtra("stopId", -1)
+
     // If Session creation or Session.resume() fails, display a message and log detailed
     // information.
     arCoreSessionHelper.exceptionCallback =
@@ -68,7 +75,7 @@ class GeoCameraActivity : AppCompatActivity() {
   }
 
   // Configure the session, setting the desired options according to your usecase.
-  fun configureSession(session: Session) {
+  private fun configureSession(session: Session) {
     session.configure(
       session.config.apply {
         // Enable Geospatial Mode.

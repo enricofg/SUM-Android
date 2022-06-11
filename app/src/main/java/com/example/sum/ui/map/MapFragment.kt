@@ -2,6 +2,7 @@ package com.example.sum.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sum.R
+import com.example.sum.ui.camera.GeoCameraActivity
 import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
 import com.example.sum.utility.model.data.stops.Stop
@@ -44,7 +46,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
     private lateinit var mMap: GoogleMap
     private lateinit var Adress: Stop
     private lateinit var ViewModel: MainViewModel
-    private var adress: StopItem? = null
+    private var address: StopItem? = null
     private var AddressList: List<String> = emptyList()
     private lateinit var input_search: AutoCompleteTextView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -56,7 +58,18 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.isIndoorEnabled = true
         mMap.isBuildingsEnabled = true
-        mMap.setOnMarkerClickListener(this)
+        mMap.setOnMarkerClickListener { marker ->
+            val stopId = marker.tag as? Int
+            Log.i("Marker: ", stopId.toString())
+
+            activity?.let{
+                val intent = Intent (it, GeoCameraActivity::class.java)
+                intent.putExtra("stopId", stopId)
+                it.startActivity(intent)
+            }
+
+            true
+        }
 
         //check current theme mode and set map theme according to it
         val nightModeFlags = requireContext().resources.configuration.uiMode and
@@ -194,7 +207,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
 
     private fun geolocation(PossibleLocation: String) {
         try {
-            adress = Adress.find {
+            address = Adress.find {
                 it.Stop_Name.lowercase().contains(PossibleLocation.lowercase())
             }
 
@@ -202,15 +215,16 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener {
             Log.e("MapLocationError", "geoLocate: IOException: $e")
         }
         // if the user input is an valid address this piece of code will transport the user to the location and set up a marker
-        if (adress != null) {
+        if (address != null) {
 
             mMap.clear()
-            val currentLatLong = LatLng(adress!!.Latitude, adress!!.Longitude)
-            mMap.addMarker(
+            val currentLatLong = LatLng(address!!.Latitude, address!!.Longitude)
+            val addedMarker = mMap.addMarker(
                 MarkerOptions()
                     .position(currentLatLong)
-                    .title(adress!!.Stop_Name)
+                    .title(address!!.Stop_Name)
             )
+            addedMarker?.tag = address!!.Stop_Id
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 15f))
             //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
         }

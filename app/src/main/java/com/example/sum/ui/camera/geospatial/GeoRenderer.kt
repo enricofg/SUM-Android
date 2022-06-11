@@ -1,14 +1,21 @@
 package com.example.sum.ui.camera.geospatial
 
 import android.opengl.Matrix
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.sum.ui.camera.GeoCameraActivity
 import com.example.sum.utility.geospatial.helpers.DisplayRotationHelper
 import com.example.sum.utility.geospatial.helpers.TrackingStateHelper
 import com.example.sum.utility.geospatial.samplerender.*
 import com.example.sum.utility.geospatial.samplerender.arcore.BackgroundRenderer
+import com.example.sum.utility.mainViewModel.MainViewModel
+import com.example.sum.utility.mainViewModel.MainViewModelFactory
+import com.example.sum.utility.repository.Repository
 import com.google.android.gms.maps.model.LatLng
 import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
@@ -74,7 +81,7 @@ class GeoRenderer(val activity: GeoCameraActivity) :
                     Texture.ColorFormat.SRGB
                 )
 
-            virtualObjectMesh = Mesh.createFromAsset(render, "models/geospatial_marker.obj");
+            virtualObjectMesh = Mesh.createFromAsset(render, "models/geospatial_marker.obj")
             virtualObjectShader =
                 Shader.createFromAssets(
                     render,
@@ -97,6 +104,11 @@ class GeoRenderer(val activity: GeoCameraActivity) :
         virtualSceneFramebuffer.resize(width, height)
     }
     //</editor-fold>
+
+    private lateinit var viewModel: MainViewModel
+    private val repository = Repository()
+    private val viewModelFactory = MainViewModelFactory(repository)
+    private var loaded = false
 
     override fun onDrawFrame(render: SampleRender) {
         val session = session ?: return
@@ -158,9 +170,11 @@ class GeoRenderer(val activity: GeoCameraActivity) :
         render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f)
         //</editor-fold>
 
+        //cal API
+        viewModel = ViewModelProvider(activity, viewModelFactory)[MainViewModel::class.java]
+
         val earth = session.earth
         if (earth?.trackingState == TrackingState.TRACKING) {
-            // TODO: the Earth object may be used here.
             val cameraGeospatialPose = earth.cameraGeospatialPose
             activity.view.mapView?.updateMapPosition(
                 latitude = cameraGeospatialPose.latitude,
@@ -169,9 +183,22 @@ class GeoRenderer(val activity: GeoCameraActivity) :
             )
         }
 
+        if (earth != null) {
+            //activity.view.updateStatusText(earth, earth.cameraGeospatialPose)
+        }
+
         // Draw the placed anchor, if it exists.
         earthAnchor?.let {
             render.renderCompassAtAnchor(it)
+        }
+
+        if (!loaded) {
+            val handler = Handler(Looper.getMainLooper())
+            handler.post {
+                run {
+                    loadStopOnMap(3)
+                }
+            }
         }
 
         // Compose the virtual scene with the background.
@@ -179,6 +206,42 @@ class GeoRenderer(val activity: GeoCameraActivity) :
     }
 
     var earthAnchor: Anchor? = null
+
+    private fun loadStopOnMap(id: Int) {
+        viewModel.getStops(id)
+        viewModel.stopsName.observe(activity, Observer { response ->
+            if (response.isSuccessful) {
+                val firstStop = response.body()?.get(0)
+
+                val earth = session?.earth ?: return@Observer
+                if (earth.trackingState != TrackingState.TRACKING) {
+                    return@Observer
+                }
+                earthAnchor?.detach()
+                // Place the earth anchor at the same altitude as that of the camera to make it easier to view.
+                val altitude = earth.cameraGeospatialPose.altitude - 1
+                // The rotation quaternion of the anchor in the East-Up-South (EUS) coordinate system.
+                earthAnchor =
+                    earth.createAnchor(
+                        firstStop!!.Latitude,
+                        firstStop.Longitude,
+                        altitude,
+                        0f,
+                        0f,
+                        0f,
+                        1f
+                    )
+                activity.view.mapView?.earthMarker?.apply {
+                    position = LatLng(firstStop.Latitude, firstStop.Longitude)
+                    isVisible = true
+                }
+
+                val destination = LatLng(firstStop.Latitude, firstStop.Longitude)
+                activity.view.mapView?.destination = destination
+                loaded = true
+            }
+        })
+    }
 
     fun onMapClick(latLng: LatLng) {
         val earth = session?.earth ?: return
