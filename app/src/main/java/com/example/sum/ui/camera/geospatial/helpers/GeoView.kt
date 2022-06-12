@@ -7,13 +7,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.sum.R
 import com.example.sum.ui.camera.GeoCameraActivity
+import com.example.sum.utility.geospatial.helpers.SnackbarHelper
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.google.ar.core.Earth
 import com.google.ar.core.GeospatialPose
-import com.example.sum.utility.geospatial.helpers.SnackbarHelper
-import com.google.ar.core.Config
-import com.google.ar.core.Session
 
 /** Contains UI elements for Hello Geo. */
 class GeoView(val activity: GeoCameraActivity) : DefaultLifecycleObserver {

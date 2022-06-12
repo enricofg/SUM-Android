@@ -6,19 +6,17 @@ import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.sum.BuildConfig.MAPS_API_KEY
 import com.example.sum.R
 import com.example.sum.ui.camera.GeoCameraActivity
+import com.example.sum.ui.camera.geospatial.Direction
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import org.json.JSONObject
-import java.io.InputStream
 
 
 class MapView(val activity: GeoCameraActivity, val googleMap: GoogleMap) {
@@ -126,7 +124,7 @@ class MapView(val activity: GeoCameraActivity, val googleMap: GoogleMap) {
         //val position = LatLng(latitude, longitude)
         val path: MutableList<List<LatLng>> = ArrayList()
         val urlDirections =
-            "https://maps.googleapis.com/maps/api/directions/json?origin=${startingPoint.latitude},${startingPoint.longitude}&destination=${destination.latitude},${destination.longitude}&key=AIzaSyAlIse-fCJl0CntP-rQ5s0Y5z83BTp0MOY"
+            "https://maps.googleapis.com/maps/api/directions/json?origin=${startingPoint.latitude},${startingPoint.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=AIzaSyAlIse-fCJl0CntP-rQ5s0Y5z83BTp0MOY"
         Log.i("URL: ", urlDirections)
         val directionsRequest = object :
             StringRequest(Method.GET, urlDirections, Response.Listener { response ->
@@ -134,17 +132,43 @@ class MapView(val activity: GeoCameraActivity, val googleMap: GoogleMap) {
                 Log.i("JSONResponse", jsonResponse.toString())
                 // Get routes
                 val routes = jsonResponse.getJSONArray("routes")
-
                 val legs = routes.getJSONObject(0).getJSONArray("legs")
                 val steps = legs.getJSONObject(0).getJSONArray("steps")
+                val directions = ArrayList<Direction>()
                 for (i in 0 until steps.length()) {
+                    /**Points to render in 2D map*/
                     val points =
                         steps.getJSONObject(i).getJSONObject("polyline").getString("points")
                     path.add(PolyUtil.decode(points))
+
+                    /**Directions for 3D navigation*/
+                    val directionLatitude =
+                        steps.getJSONObject(i).getJSONObject("start_location").getString("lat").toDouble()
+                    val directionLongitude =
+                        steps.getJSONObject(i).getJSONObject("start_location").getString("lng").toDouble()
+
+                    var directionText:String = if(steps.getJSONObject(i).has("maneuver")){
+                        steps.getJSONObject(i).getString("maneuver")
+                    } else if(i==0){
+                        "head-to"
+                    } else{
+                        "continue-on"
+                    }
+
+                    val directionDistance =
+                        steps.getJSONObject(i).getJSONObject("distance").getString("text")
+                    val directionDuration =
+                        steps.getJSONObject(i).getJSONObject("duration").getString("text")
+                    val direction = Direction(LatLng(directionLatitude, directionLongitude), directionText, directionDistance, directionDuration)
+                    directions.add(direction)
                 }
+                //render the 2d map directions
                 for (i in 0 until path.size) {
                     this.googleMap.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
                 }
+
+                //render 3d map navigation
+                placeDirectionPoints(directions)
             }, Response.ErrorListener {
             }) {}
         val requestQueue = Volley.newRequestQueue(activity)
@@ -152,6 +176,13 @@ class MapView(val activity: GeoCameraActivity, val googleMap: GoogleMap) {
         routeLoaded = true
     }
 
-
+    private fun placeDirectionPoints(
+        directions: ArrayList<Direction>
+    ) {
+        directions.forEach{
+            Log.i("Direction #${directions.indexOf(it)}: ", it.toString())
+            activity.renderer.renderDirectionOnMap(it)
+        }
+    }
 
 }

@@ -197,9 +197,9 @@ class GeoRenderer(val activity: GeoCameraActivity) :
             val handler = Handler(Looper.getMainLooper())
             handler.post {
                 run {
+                    loadStopOnMap(3)
                     if(stopId>=0){
                     }
-                        loadStopOnMap(4)
                 }
             }
         }
@@ -246,8 +246,36 @@ class GeoRenderer(val activity: GeoCameraActivity) :
         })
     }
 
-    fun onMapClick(latLng: LatLng) {
+    fun renderDirectionOnMap(direction: Direction) {
         val earth = session?.earth ?: return
+        if (earth.trackingState != TrackingState.TRACKING) {
+            return
+        }
+        earthAnchor?.detach()
+        // Place the earth anchor at the same altitude as that of the camera to make it easier to view.
+        val altitude = earth.cameraGeospatialPose.altitude - 1
+        // The rotation quaternion of the anchor in the East-Up-South (EUS) coordinate system.
+        earthAnchor =
+            earth.createAnchor(
+                direction.location.latitude,
+                direction.location.longitude,
+                altitude,
+                0f,
+                0f,
+                0f,
+                1f
+            )
+        activity.view.mapView?.earthMarker?.apply {
+            position = LatLng(direction.location.latitude, direction.location.longitude)
+            isVisible = true
+        }
+
+        val destination = LatLng(direction.location.latitude, direction.location.longitude)
+        activity.view.mapView?.destination = destination
+    }
+
+    fun onMapClick(latLng: LatLng) {
+        /*val earth = session?.earth ?: return
         if (earth.trackingState != TrackingState.TRACKING) {
             return
         }
@@ -264,7 +292,7 @@ class GeoRenderer(val activity: GeoCameraActivity) :
         activity.view.mapView?.earthMarker?.apply {
             position = latLng
             isVisible = true
-        }
+        }*/
     }
 
     private fun SampleRender.renderCompassAtAnchor(anchor: Anchor) {
