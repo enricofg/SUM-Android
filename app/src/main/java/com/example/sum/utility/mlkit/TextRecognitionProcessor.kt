@@ -18,6 +18,8 @@ package com.example.sum.utility.mlkit
 
 import android.content.Context
 import android.util.Log
+//import com.example.sum.ui.camera.ChatLabelButton
+import com.example.sum.ui.camera.StillImageActivity
 import com.example.sum.utility.PreferenceUtils
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
@@ -44,6 +46,7 @@ class TextRecognitionProcessor(private val context: Context, textRecognizerOptio
   override fun onSuccess(text: Text, graphicOverlay: GraphicOverlay) {
     Log.d(TAG, "On-device Text detection successful")
     logExtrasForTesting(text)
+
     graphicOverlay.add(
       TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks, showLanguageTag))
   }
@@ -56,25 +59,36 @@ class TextRecognitionProcessor(private val context: Context, textRecognizerOptio
     private const val TAG = "TextRecProcessor"
     private fun logExtrasForTesting(text: Text?) {
       if (text != null) {
+
         Log.v(
           MANUAL_TESTING_LOG,
           "Detected text has : " + text.textBlocks.size + " blocks"
         )
+
+
         for (i in text.textBlocks.indices) {
           val lines = text.textBlocks[i].lines
           Log.v(
             MANUAL_TESTING_LOG,
             String.format("Detected text block %d has %d lines", i, lines.size)
           )
+          StillImageActivity.tags = emptyList()
           for (j in lines.indices) {
-            val elements =
-              lines[j].elements
-            Log.v(
+            val elements = lines[j].elements
+            // StillImageActivity.tags+=lines[j].text;
+            // StillImageActivity.adapter.add(ChatLabelButton(lines[j].text));
+            StillImageActivity.tags+=lines[j].text;
+
+          Log.v(
               MANUAL_TESTING_LOG,
               String.format("Detected text line %d has %d elements", j, elements.size)
             )
+
             for (k in elements.indices) {
+
               val element = elements[k]
+              //StillImageActivity.labels[k]=element.text;
+              print(element.text);
               Log.v(
                 MANUAL_TESTING_LOG,
                 String.format("Detected text element %d says: %s", k, element.text)
@@ -103,6 +117,7 @@ class TextRecognitionProcessor(private val context: Context, textRecognizerOptio
               }
             }
           }
+          //StillImageActivity.recicler.adapter = StillImageActivity.adapter
         }
       }
     }

@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.Log
+import androidx.test.core.app.launchActivity
 import com.google.mlkit.vision.text.Text
 import java.util.Arrays
 import kotlin.math.max
@@ -84,6 +85,7 @@ constructor(
             canvas
           )
           for (element in line.elements) {
+
             Log.d(TAG, "Element text is: " + element.text)
             Log.d(TAG, "Element boundingbox is: " + element.boundingBox)
             Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.cornerPoints))
@@ -124,6 +126,7 @@ constructor(
     )
     // Renders the text at the bottom of the box.
     canvas.drawText(text, rect.left, rect.top - STROKE_WIDTH, textPaint)
+
   }
 
   companion object {

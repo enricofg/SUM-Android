@@ -391,6 +391,7 @@ abstract class VisionProcessorBase<T>(context: Context) :
 
   protected abstract fun detectInImage(image: InputImage): Task<T>
 
+
   protected open fun detectInImage(image: MlImage): Task<T> {
     return Tasks.forException(
       MlKitException(

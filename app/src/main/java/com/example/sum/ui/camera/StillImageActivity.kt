@@ -2,34 +2,39 @@ package com.example.sum.ui.camera
 
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.util.Pair
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.sum.MainActivity
 import com.example.sum.R
 import com.example.sum.utility.mlkit.BitmapUtils
 import com.example.sum.utility.mlkit.GraphicOverlay
 import com.example.sum.utility.mlkit.TextRecognitionProcessor
 import com.example.sum.utility.mlkit.VisionImageProcessor
+import com.example.sum.utility.put
 import com.google.android.gms.common.annotation.KeepName
-import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 import java.io.IOException
 
 
 /** Activity demonstrating different image detector features with a still image from camera.  */
 @KeepName
 class StillImageActivity : AppCompatActivity() {
+
+    lateinit var adapter: GroupAdapter<GroupieViewHolder>
+    lateinit var spinner: Spinner
     private var preview: ImageView? = null
     private var graphicOverlay: GraphicOverlay? = null
     private var selectedMode =
@@ -47,23 +52,28 @@ class StillImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_still_image)
+        adapter = GroupAdapter<GroupieViewHolder>()
+        spinner  = findViewById<Spinner>(R.id.spinner);
+
         findViewById<View>(R.id.select_image_button)
             .setOnClickListener { view: View ->
                 // Menu for selecting either: a) take new photo b) select from existing
-                val popup =
-                    PopupMenu(this@StillImageActivity, view)
+                val popup = PopupMenu(this@StillImageActivity, view)
                 popup.setOnMenuItemClickListener { menuItem: MenuItem ->
                     val itemId =
                         menuItem.itemId
                     if (itemId == R.id.select_images_from_local) {
                         startChooseImageIntentForResult()
+                        //tags = emptyList();
                         return@setOnMenuItemClickListener true
                     } else if (itemId == R.id.take_photo_using_camera) {
                         startCameraIntentForResult()
+                        //tags = emptyList();
                         return@setOnMenuItemClickListener true
                     }
                     false
                 }
+
                 val inflater = popup.menuInflater
                 inflater.inflate(R.menu.camera_button_menu, popup.menu)
                 popup.show()
@@ -84,6 +94,17 @@ class StillImageActivity : AppCompatActivity() {
                 savedInstanceState.getString(KEY_SELECTED_SIZE)
         }
 
+        findViewById<View>(R.id.select_search_button)
+            .setOnClickListener { view: View ->
+
+                val sharedPreference =  this.getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
+                sharedPreference.apply {
+                    put("ScheduleTime",19)
+                    put("ScheduleName","Largo do Cardal#")
+                }
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
         val rootView = findViewById<View>(R.id.root)
         rootView.viewTreeObserver.addOnGlobalLayoutListener(
             object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -97,6 +118,9 @@ class StillImageActivity : AppCompatActivity() {
                     }
                 }
             })
+
+
+
     }
 
     public override fun onResume() {
@@ -104,6 +128,18 @@ class StillImageActivity : AppCompatActivity() {
         Log.d(TAG, "onResume")
         createImageProcessor()
         tryReloadAndDetectInImage()
+        if(tags.size>0) {
+            /*          tags.forEach {
+                          adapter.add(ChatLabelButton(it))
+
+                      }*/
+            var spinnerAdapter = ArrayAdapter(
+                this,
+                androidx.transition.R.layout.support_simple_spinner_dropdown_item,
+                tags
+            )
+            spinner.adapter = spinnerAdapter
+        }
     }
 
     public override fun onPause() {
@@ -178,6 +214,16 @@ class StillImageActivity : AppCompatActivity() {
             // In this case, imageUri is returned by the chooser, save it.
             imageUri = data!!.data
             tryReloadAndDetectInImage()
+            if(tags.size>0) {
+                var spinnerAdapter = ArrayAdapter(
+                    this,
+                    androidx.transition.R.layout.support_simple_spinner_dropdown_item,
+                    tags
+                )
+                spinner.adapter = spinnerAdapter
+            }
+            var aux =1
+
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -207,7 +253,10 @@ class StillImageActivity : AppCompatActivity() {
                 graphicOverlay!!.setImageSourceInfo(
                     imageBitmap.width, imageBitmap.height, /* isFlipped= */false
                 )
+
                 imageProcessor!!.processBitmap(imageBitmap, graphicOverlay)
+
+
             } else {
                 Log.e(
                     TAG,
@@ -250,7 +299,12 @@ class StillImageActivity : AppCompatActivity() {
         }
     }
 
+
     companion object {
+
+        var tags = listOf<String>();
+
+
         private const val TAG = "StillImageActivity"
         private const val TEXT_RECOGNITION_LATIN = "Text Recognition Latin"
 
@@ -262,4 +316,7 @@ class StillImageActivity : AppCompatActivity() {
         private const val REQUEST_IMAGE_CAPTURE = 1001
         private const val REQUEST_CHOOSE_IMAGE = 1002
     }
+
 }
+
+

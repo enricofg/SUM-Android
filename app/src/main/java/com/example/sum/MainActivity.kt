@@ -1,7 +1,6 @@
 package com.example.sum
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +14,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.sum.databinding.ActivityMainBinding
-import com.example.sum.ui.bus.BusFragment
 import com.example.sum.utility.mainViewModel.MainViewModel
 import com.example.sum.utility.mainViewModel.MainViewModelFactory
 import com.example.sum.utility.repository.Repository
@@ -26,9 +24,10 @@ class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private  lateinit var viewModel: MainViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
         val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
 
@@ -40,7 +39,6 @@ class MainActivity : BaseActivity() {
                 response.body()?.forEach {
                     Log.d("response",it.Stop_Name )
                 }
-
             }
         })
 
@@ -64,6 +62,18 @@ class MainActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        if (ContextCompat.checkSelfPermission(this@MainActivity,
+                Manifest.permission.CAMERA) !==
+            PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
+                    Manifest.permission.CAMERA)) {
+                ActivityCompat.requestPermissions(this@MainActivity,
+                    arrayOf(Manifest.permission.CAMERA), 1)
+            } else {
+                ActivityCompat.requestPermissions(this@MainActivity,
+                    arrayOf(Manifest.permission.CAMERA), 1)
+            }
+        }
         if (ContextCompat.checkSelfPermission(this@MainActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION) !==
             PackageManager.PERMISSION_GRANTED) {
