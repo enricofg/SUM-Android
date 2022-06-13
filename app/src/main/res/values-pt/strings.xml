@@ -22,4 +22,12 @@
     <string name="dark">Escuro</string>
     <string name="auto">Automático</string>
     <string name="map_search_box">Insira o endereço, cidade ou codigo postal</string>
+    <string name="ar_navigation">Navegação</string>
+    <string name="open_bus_recognition">Reconhecimento de Autocarro</string>
+    <string name="schedule_assistant">Assistente de Horários</string>
+    <string name="select_image" translatable="false">Selecionar imagem</string>
+    <string name="select_image_from_album">Selecionar imagem da galeria</string>
+    <string name="take_photo">Tirar foto</string>
+    <string name="start_from">A partir de</string>
+    <string name="send_to">Enviar para</string>
 </resources>

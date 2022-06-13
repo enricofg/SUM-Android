@@ -23,12 +23,14 @@
     <string name="dark">Dark</string>
     <string name="auto">Auto</string>
     <string name="map_search_box">Enter Address, City or Zip Code</string>
-    <string name="ar_navigation">AR Navigation</string>
-    <string name="open_bus_recognition">Open Bus Recognition</string>
+    <string name="ar_navigation">Navigation</string>
+    <string name="open_bus_recognition">Bus Recognition</string>
     <string name="schedule_assistant">Schedule Assistant</string>
-    <string name="select_image" translatable="false">Select image</string>
+    <string name="select_image">Select image</string>
     <string name="select_image_from_album">Select image from album</string>
     <string name="take_photo">Take photo</string>
+    <string name="start_from">Start from</string>
+    <string name="send_to">Send to</string>
 
     <!--MLKit Preferences-->
     <string name="pref_key_camera_live_viewport" translatable="false">clv</string>
@@ -36,5 +38,5 @@
     <string name="pref_key_group_recognized_text_in_blocks" translatable="false">grtib</string>
     <string name="pref_key_show_language_tag" translatable="false">slt</string>
     <string name="geospatial_pose" translatable="false" >LAT/LNG: %.6f˚, %.6f˚\n\t\t\tACCURACY: %.2fm\nALTITUDE: %.2fm\n\t\t\tACCURACY: %.2fm\nHEADING: %.1f˚\n\t\t\tACCURACY: %.1f˚</string>
-    <string name="earth_state">EarthState: %1$s\nTrackingState: %2$s\n%3$s</string>
+    <string name="earth_state" translatable="false">EarthState: %1$s\nTrackingState: %2$s\n%3$s</string>
 </resources>

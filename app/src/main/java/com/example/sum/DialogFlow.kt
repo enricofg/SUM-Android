@@ -22,16 +22,14 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import java.util.*
 
-
 class DialogFlow : AppCompatActivity() {
-
-
-    private lateinit var ViewModel: MainViewModel
-    private lateinit var Adress: Stop
+    private lateinit var viewModel: MainViewModel
+    private lateinit var address: Stop
     private lateinit var adapter: GroupAdapter<GroupieViewHolder>
-    private lateinit var recicler: RecyclerView
-    private var couter = 0
-    private var ArrayUser1: Array<String> = arrayOf("get bus schedule","dá-me o horário dos autocarros")
+    private lateinit var recycler: RecyclerView
+    private var counter = 0
+    private var options: Array<String> =
+        arrayOf("get bus schedule", "dá-me o horário dos autocarros")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,34 +38,31 @@ class DialogFlow : AppCompatActivity() {
         val text = findViewById<EditText>(R.id.DialogTextBox)
         val btnSpeak = findViewById<ImageButton>(R.id.btnSpeak)
 
-        recicler = findViewById<RecyclerView>(R.id.dialogRecicler)
-
-        recicler.layoutManager = LinearLayoutManager(this)
-        recicler.setHasFixedSize(true)
+        recycler = findViewById<RecyclerView>(R.id.dialogRecicler)
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.setHasFixedSize(true)
         adapter = GroupAdapter<GroupieViewHolder>()
         val viewModelFactory = MainViewModelFactory(Repository())
-        ViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        ViewModel.getStops()
-        ViewModel.stops.observe(this, Observer { response ->
-
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+        viewModel.getStops()
+        viewModel.stops.observe(this, Observer { response ->
             if (response.isSuccessful) {
-
-                Adress = response.body()!!
-                Log.d("address", Adress.toString())
+                address = response.body()!!
+                Log.d("address", address.toString())
             }
         })
 
         dialog.setOnClickListener {
-                lateinit var mgs:String
+            lateinit var mgs: String
             if (text.text.toString().isNotEmpty()) {
                 adapter.add(ChatItemUser(text.text.toString()))
-                recicler.adapter = adapter
-                if (text.text.toString()[text.text.length - 1] == ' ') {
-                    mgs = text.text.substring(0, text.text.length - 1)
-                }else {
-                    mgs = text.text.toString()
+                recycler.adapter = adapter
+                mgs = if (text.text.toString()[text.text.length - 1] == ' ') {
+                    text.text.substring(0, text.text.length - 1)
+                } else {
+                    text.text.toString()
                 }
-                this.DialogMessage(adapter, recicler, mgs);
+                this.DialogMessage(adapter, recycler, mgs);
                 text.text.clear()
             }
             val view = this.currentFocus
@@ -76,107 +71,102 @@ class DialogFlow : AppCompatActivity() {
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }
-        btnSpeak.setOnClickListener{
+        btnSpeak.setOnClickListener {
+
 
             getSpeechInput()
         }
-
     }
 
-
-
-    private fun getSpeechInput()
-    {
+    private fun getSpeechInput() {
         val intent = Intent(
             RecognizerIntent
-            .ACTION_RECOGNIZE_SPEECH)
+                .ACTION_RECOGNIZE_SPEECH
+        )
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
-            Locale.getDefault())
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE,
+            Locale.getDefault()
+        )
 
-        if (intent.resolveActivity(packageManager) != null)
-        {
+        if (intent.resolveActivity(packageManager) != null) {
             startActivityForResult(intent, 10)
-        } else
-        {
-            Toast.makeText(this,
+        } else {
+            Toast.makeText(
+                this,
                 "Your Device Doesn't Support Speech Input",
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
 
-
-    override fun onActivityResult(requestCode: Int,
-                                  resultCode: Int, data: Intent?)
-    {
-        super.onActivityResult(requestCode,
-            resultCode, data)
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int, data: Intent?
+    ) {
+        super.onActivityResult(
+            requestCode,
+            resultCode, data
+        )
         when (requestCode) {
             10 -> if (resultCode == RESULT_OK &&
-                data != null)
-            {
+                data != null
+            ) {
                 val result =
-                    data.
-                    getStringArrayListExtra(
-                        RecognizerIntent.EXTRA_RESULTS)
-                Log.d("result",result.toString())
+                    data.getStringArrayListExtra(
+                        RecognizerIntent.EXTRA_RESULTS
+                    )
+                Log.d("result", result.toString())
 
                 adapter.add(ChatItemUser(result?.get(0) ?: ""))
-                recicler.adapter = adapter
-                this.DialogMessage(adapter, recicler, result?.get(0) ?: "");
+                recycler.adapter = adapter
+                this.DialogMessage(adapter, recycler, result?.get(0) ?: "");
             }
         }
     }
 
-    private fun DialogMessage(adapter: GroupAdapter<GroupieViewHolder>, recicler: RecyclerView, mgs:String) {
-
-        if (couter == 0 && ArrayUser1.contains(mgs.lowercase())){
-
-
+    private fun DialogMessage(
+        adapter: GroupAdapter<GroupieViewHolder>,
+        recicler: RecyclerView,
+        mgs: String
+    ) {
+        if (counter == 0 && options.contains(mgs.lowercase())) {
             adapter.add(chatItemDialog("Nearby Stations:"))
             recicler.adapter = adapter
-
-            Adress.forEach {
+            address.forEach {
                 adapter.add(chatItemDialog(it.Stop_Name))
                 recicler.adapter = adapter
             }
-
-            couter++
-        }else if(couter == 1 && mgs.lowercase()!="exit"){
+            counter++
+        } else if (counter == 1 && mgs.lowercase() != "exit") {
             Log.d("address", mgs)
-            Adress.forEach {
-                if(it.Stop_Name.lowercase() == mgs.lowercase()){
+            address.forEach {
+                if (it.Stop_Name.lowercase() == mgs.lowercase()) {
                     Log.d("address", mgs)
-                    val sharedPreference =  this.getSharedPreferences("SCHEDULE",Context.MODE_PRIVATE)
+                    val sharedPreference =
+                        this.getSharedPreferences("SCHEDULE", Context.MODE_PRIVATE)
 
                     sharedPreference.apply {
-                        put("ScheduleTime",it.Stop_Id)
-                        put("ScheduleName",it.Stop_Name)
+                        put("ScheduleTime", it.Stop_Id)
+                        put("ScheduleName", it.Stop_Name)
                     }
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 }
-
             }
-        }else if(mgs.lowercase()=="exit"){
-
-            couter = 0
-
-        } else{
+        } else if (mgs.lowercase() == "exit") {
+            counter = 0
+        } else {
             adapter.add(chatItemDialog("please repeat "))
         }
-
-
-
-
-
     }
 }
-class ChatItemUser(val value:String) :Item<GroupieViewHolder>(){
+
+class ChatItemUser(val value: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.userMessage).text = value
     }
@@ -184,10 +174,10 @@ class ChatItemUser(val value:String) :Item<GroupieViewHolder>(){
     override fun getLayout(): Int {
         return R.layout.chat_from_user
     }
-
 }
 
-class chatItemDialog(val value:String) :Item<GroupieViewHolder>(){
+
+class chatItemDialog(val value: String) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.DialogMessage).text = value
     }
@@ -195,5 +185,4 @@ class chatItemDialog(val value:String) :Item<GroupieViewHolder>(){
     override fun getLayout(): Int {
         return R.layout.chat_from_dialog
     }
-
 }
